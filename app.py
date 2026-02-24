@@ -192,6 +192,9 @@ def show_results(work_dir):
 
 
 def execute_grading(key_df, ans_df, api_key, tag=""):
+    if not api_key:
+        st.warning("⚠️ Enter your API key in the sidebar to run grading.")
+        return
     if st.button(T("grader_run"), type="primary", use_container_width=True, key=f"run_{tag}"):
         work_dir = tempfile.mkdtemp(prefix="chidon_")
         st.session_state.work_dir = work_dir
@@ -950,11 +953,9 @@ def main():
         api_key = st.text_input(T("sidebar_api_key"), type="password",
                                 placeholder="Your API key...", key="api_input")
         if not api_key:
-            for env_var in ["CHIDON_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY", "GOOGLE_API_KEY"]:
-                api_key = os.environ.get(env_var, "")
-                if api_key:
-                    st.caption(f"Key from ${env_var}")
-                    break
+            st.caption("⚠️ Enter your API key to use the Grader")
+        else:
+            st.caption("✅ API key set")
         st.session_state["_api_key"] = api_key
 
         st.divider()
